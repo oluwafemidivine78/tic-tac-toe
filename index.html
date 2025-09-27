@@ -300,6 +300,7 @@
         let difficulty = 'easy';
         let gameActive = true;
         let scores = { X: 0, O: 0, draw: 0 };
+        let gameStartPlayer = 'X'; // Track who should start the next game
 
         const winningConditions = [
             [0, 1, 2], [3, 4, 5], [6, 7, 8], // rows
@@ -506,11 +507,14 @@
             
             // Disable all cells
             document.querySelectorAll('.cell').forEach(cell => cell.disabled = true);
+            
+            // Alternate starting player for the next game
+            gameStartPlayer = gameStartPlayer === 'X' ? 'O' : 'X';
         }
 
         function resetGame() {
             board = ['', '', '', '', '', '', '', '', ''];
-            currentPlayer = 'X';
+            currentPlayer = gameStartPlayer; // Use the alternating start player
             gameActive = true;
             
             document.querySelectorAll('.cell').forEach(cell => {
@@ -520,10 +524,16 @@
             });
             
             updateStatus();
+            
+            // If it's computer's turn to start and we're in PvC mode, make computer move
+            if (gameMode === 'pvc' && currentPlayer === 'O') {
+                setTimeout(computerMove, 500);
+            }
         }
 
         function resetScores() {
             scores = { X: 0, O: 0, draw: 0 };
+            gameStartPlayer = 'X'; // Reset starting player to X when scores are reset
             updateScores();
         }
 
@@ -538,5 +548,4 @@
         updateScores();
     </script>
 </body>
-
 </html>
